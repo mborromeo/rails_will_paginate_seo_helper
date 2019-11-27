@@ -8,8 +8,6 @@ A simple Rails ViewHelper to display link-tags for will_paginate in header.
 
 Url-Parameter left untouched.
 
-Atm. expects 'page' as page_param -key.
-
 Google suggests to add rel=next and rel=prev link-tags on paged pages: https://webmasters.googleblog.com/2011/09/pagination-with-relnext-and-relprev.html
 
 If you want to have seo link-tags for pages in your rails app without monkey patching will_paginate:
@@ -18,7 +16,7 @@ If you want to have seo link-tags for pages in your rails app without monkey pat
 simple add to your Gemfile:
 
 ```ruby
- # works with rails 4 and 5
+ # works with rails 4, 5 and 6
  gem 'will_paginate'
  gem 'rails_will_paginate_seo_helper'
 ```
@@ -47,4 +45,9 @@ given we are on page 2 - output will be:
 ```html
 <link href="http://localhost:3000/todos" rel="prev">
 <link href="http://localhost:3000/todos?page=3" rel="next">
+```
+
+You can also specify a custom page parameter name:
+```ruby
+will_paginate_seo_links(@todos, param_name: 'p')
 ```
