@@ -1,8 +1,9 @@
 module RailsWillPaginateSeoHelper
   module ViewHelpers
-    def will_paginate_seo_links(collection)
+    def will_paginate_seo_links(collection, param_name: 'page')
       return unless collection.respond_to?(:current_page)
       @collection = collection
+      @param_name = param_name
       build_tags
     end
 
@@ -22,9 +23,9 @@ module RailsWillPaginateSeoHelper
 
       if previous_page
         if previous_page == 1
-          prev_page_url = original_url.gsub(/(&|\?)page\=\d{1,}/, '')
+          prev_page_url = original_url.gsub(/(&|\?)#{@param_name}\=\d{1,}/, '')
         else
-          prev_page_url = original_url.gsub(/page\=\d{1,}/, "page=#{previous_page}")
+          prev_page_url = original_url.gsub(/#{@param_name}\=\d{1,}/, "#{@param_name}=#{previous_page}")
         end
         return tag(:link, href: prev_page_url, rel: :prev)
       end
@@ -36,16 +37,16 @@ module RailsWillPaginateSeoHelper
       
       original_url = request.original_url
 
-      match = original_url.match(/(&|\?)page\=\d{1,}/)
+      match = original_url.match(/(&|\?)#{@param_name}\=\d{1,}/)
 
       if match          # has :page url-parameter
-        next_page_url = original_url.gsub(/page\=\d{1,}/, "page=#{next_page}")
+        next_page_url = original_url.gsub(/#{@param_name}\=\d{1,}/, "#{@param_name}=#{next_page}")
       else              # no :page url-parameter page
         sign_match = original_url.match(/\?/)
         if sign_match   # url has parameter attached
-          next_page_url = original_url.concat("&page=#{next_page}")
+          next_page_url = original_url.concat("&#{@param_name}=#{next_page}")
         else            # url has no parameter attached
-          next_page_url = original_url.concat("?page=#{next_page}")
+          next_page_url = original_url.concat("?#{@param_name}=#{next_page}")
         end
       end
       tag(:link, href: next_page_url, rel: :next) if next_page_url
